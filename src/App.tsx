@@ -1,24 +1,48 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {Formik, Form, Field, ErrorMessage} from 'formik';
+import * as Yup from 'yup';
+import FormikField from './components/FormField/FormField';
+
+interface FormValues{
+  name: string;
+}
+
+const initialValues: FormValues={
+  name: ""
+}
+
+const RegisterSchema=Yup.object().shape({
+  name: Yup.string()
+  .min(2, 'Name must have atlear 2 characters')
+  .required('Name is required')
+})
 
 function App() {
+
+  const forSubmit=(values:FormValues): void =>{
+    alert(JSON.stringify(values));
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Registration Form</h1>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={forSubmit}
+        validationSchema={RegisterSchema}
+      >
+        {
+          ({dirty,isValid})=>{
+            return (
+              <Form>
+                <FormikField label="Name" name="name"/>
+                <button disabled={!dirty || !isValid} type="submit">Sign up</button>
+              </Form>
+            )
+          }
+        }
+      </Formik>
     </div>
   );
 }
